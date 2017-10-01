@@ -1,6 +1,20 @@
 import tensorflow as tf
 import numpy as np
 import random as rn
-english_words=set()
-with open("wordsEn.txt") as word_file:
-    english_words=set(word.strip().lower() for word in word_file)
+dictionary=set()
+def PrepareData():
+    count=0
+    with open("movie_lines.txt",'r') as data_file:
+        for sentence in data_file:
+            sen=sentence.split(" +++$+++ ")
+            sen=sen[len(sen)-1].split(" ")
+            f=1
+            for w in sen:
+                w.replace("\n","")
+                w.replace(".","")
+                w.replace("\"","")
+                w.replace("?","")
+                w.replace("!","")
+                dictionary.update(w)
+PrepareData()
+
