@@ -62,11 +62,14 @@ def WordtoVec():
 	dx=tf.gradients(state,x,grad_ys=pregrad)
 	with tf.Session() as sess:
 		co=np.ones(shape=(worddimy,1))
+		_i=0
 		for words in total_sen:
+			_i+=1
+			print("Completed: ",_i/len(total_sen)*100)
 			states=np.zeros(shape=(len(words)-1,1,1))
 			res=np.array(words[len(words)-1]).reshape(1,1)
 			for w in range(0,len(words)-1):
-				k=dictionary.index(words[w].lower())
+				k=dictionary.index(words[w])
 				x_=wordvec[k].reshape(5,1,worddimy)
 				if w<len(words)-2:
 					if w==0:
@@ -79,10 +82,12 @@ def WordtoVec():
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res}
 					z=sess.run([state,loss],feed_dict=inp)
 					states[w]=z[0]
-					print(z[1][0])
+					print("loss: ",z[1][0][0])
+			if(z[1][0][0]<0.00000001):
+				continue
 			dpres=[[0]]
 			for w in reversed(range(0,len(words)-1)):
-				k=dictionary.index(words[w].lower())
+				k=dictionary.index(words[w])
 				x_=wordvec[k].reshape(5,1,worddimy)
 				if w==len(words)-2:
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res}
