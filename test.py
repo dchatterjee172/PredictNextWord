@@ -72,7 +72,7 @@ def WordtoVec():
 			for w in range(0,len(words)-1):
 				k=dictionary.index(words[w])
 				x_=wordvec[k].reshape(5,1,worddimy)
-				if w<len(words)-2:
+				if w<len(words)-1:
 					if w==0:
 						inp={actx:x_,pre:[[0]],coef:co}
 					else:
@@ -90,7 +90,7 @@ def WordtoVec():
 			for w in reversed(range(0,len(words)-1)):
 				k=dictionary.index(words[w])
 				x_=wordvec[k].reshape(5,1,worddimy)
-				if w==len(words)-2:
+				if w==len(words)-1:
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res}
 					z=sess.run([dxlast,dstatelast],feed_dict=inp)
 					wordvec[k]-=z[0][0].reshape(5,worddimy)*.1
