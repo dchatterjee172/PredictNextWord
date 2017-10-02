@@ -15,13 +15,24 @@ def PrepareData():
             sen=sent.split(" +++$+++ ")
             sen=sen[len(sen)-1].split(" ")
             f=1
-            for w in sen:
-                w.replace("\n","")
-                w.replace(".","")
-                w.replace("\"","")
-                w.replace("?","")
-                w.replace("!","")
-                dictionary.add(w)
+            for w in range(0,len(sen)):
+            	sen[w]=sen[w].replace("\n","")
+            	sen[w]=sen[w].replace(".","")
+            	sen[w]=sen[w].replace("\"","")
+            	sen[w]=sen[w].replace("?","")
+            	sen[w]=sen[w].replace("!","")
+            	sen[w]=sen[w].replace(",","")
+            	sen[w]=sen[w].replace("-","")
+            	sen[w]=sen[w].replace("\97","")
+            	sen[w]=sen[w].replace(":","")
+            	sen[w]=sen[w].replace("</u>","")
+            	sen[w]=sen[w].replace("<u>","")
+            	sen[w]=sen[w].replace("+","")
+            	sen[w]=sen[w].replace("$","")
+            	sen[w]=sen[w].lower()
+            	sen[w]=sen[w].strip()
+            	dictionary.add(sen[w])
+            	#print(sen[w])
             bsen=sen.copy()
             sen.append(1)
             good_sentence.append(sen)
@@ -31,6 +42,7 @@ def PrepareData():
     total_sen=good_sentence+bad_sentence
     np.random.shuffle(total_sen)
     dictionary=list(dictionary)
+    print(len(dictionary))
     wordvec=np.random.uniform(-2,2,(len(dictionary),5,worddimy))
 def WordtoVec():
 	dt=tf.float32
@@ -54,7 +66,7 @@ def WordtoVec():
 			states=np.zeros(shape=(len(words)-1,1,1))
 			res=np.array(words[len(words)-1]).reshape(1,1)
 			for w in range(0,len(words)-1):
-				k=dictionary.index(words[w])
+				k=dictionary.index(words[w].lower())
 				x_=wordvec[k].reshape(5,1,worddimy)
 				if w<len(words)-2:
 					if w==0:
@@ -70,7 +82,7 @@ def WordtoVec():
 					print(z[1][0])
 			dpres=[[0]]
 			for w in reversed(range(0,len(words)-1)):
-				k=dictionary.index(words[w])
+				k=dictionary.index(words[w].lower())
 				x_=wordvec[k].reshape(5,1,worddimy)
 				if w==len(words)-2:
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res}
