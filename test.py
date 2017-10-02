@@ -37,7 +37,7 @@ def PrepareData():
             sen.append(1)
             good_sentence.append(sen)
             np.random.shuffle(bsen)
-            bsen.append(0)
+            bsen.append(-1)
             bad_sentence.append(bsen)
     total_sen=good_sentence+bad_sentence
     np.random.shuffle(total_sen)
@@ -53,8 +53,8 @@ def WordtoVec():
 	x=tf.get_variable("x1",shape=[5,1,worddimy])
 	actx=tf.placeholder(name="actx",dtype=dt,shape=(5,1,worddimy))
 	assignx=tf.assign(x,actx)
-	state=tf.nn.elu(tf.matmul(tf.reduce_sum(x,0),coef)+pre)
-	loss=tf.square((tf.sigmoid(state)-actual))
+	state=(tf.matmul(tf.reduce_sum(x,0),coef)+pre)
+	loss=tf.square((tf.nn.softsign(state)-actual))
 	dxlast=tf.gradients(loss,x)
 	dstatelast=tf.gradients(loss,state)
 	dstate=pregrad
@@ -65,7 +65,8 @@ def WordtoVec():
 		_i=0
 		for words in total_sen:
 			_i+=1
-			print("Completed: ",_i/len(total_sen)*100)
+			#words=total_sen[2526]
+			#print("Completed: ",_i/len(total_sen)*100)
 			states=np.zeros(shape=(len(words)-1,1,1))
 			res=np.array(words[len(words)-1]).reshape(1,1)
 			for w in range(0,len(words)-1):
