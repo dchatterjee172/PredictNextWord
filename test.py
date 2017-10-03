@@ -35,10 +35,10 @@ def WordtoVec():
 			if len(words)<3:
 				continue
 			states=np.zeros(shape=(len(words)-1,1,1))
-			res=np.array(words[len(words)-1]).reshape(1,1)
+			res=np.array(int(words[len(words)-1])).reshape(1,1)
 			_loss=0
 			for w in range(0,len(words)-1):
-				k=dictionary.index(words[w])
+				k=int(words[w])
 				x_=wordvec[k].reshape(5,1,worddimy)
 				if w<len(words)-2:
 					if w==0:
@@ -57,7 +57,7 @@ def WordtoVec():
 				continue
 			dpres=[[0]]
 			for w in reversed(range(0,len(words)-1)):
-				k=dictionary.index(words[w])
+				k=int(words[w])
 				x_=wordvec[k].reshape(5,1,worddimy)
 				if w==len(words)-2:
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res}
