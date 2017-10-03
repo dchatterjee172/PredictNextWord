@@ -38,19 +38,19 @@ def WordtoVec():
 			#print("Completed: ",_i/len(total_sen)*100)
 			words=total_sen[it]
 			it+=1
-			if len(words)<3:
-				continue
 			_i+=1
 			if _i==batch_mem:
 				if trainingpbatch>0:
 					it-=_i
-					_i=1
+					_i=0
 					trainingpbatch-=1
 				else:
 					_i=1
 					trainingpbatch=1
 					print("loss ",_bloss/batch_mem)
 				_bloss=0
+			if len(words)<3:
+				continue
 			states=np.zeros(shape=(len(words)-1,1,1))
 			res=np.array(int(words[len(words)-1])).reshape(1,1)
 			for w in range(0,len(words)-1):
@@ -67,7 +67,6 @@ def WordtoVec():
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res}
 					z=sess.run([state,loss],feed_dict=inp)
 					states[w]=z[0]
-					#print("loss: ",z[1][0][0])
 					_loss=z[1][0][0]
 			_bloss+=_loss
 			if(_loss<0.00000001):
