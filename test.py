@@ -30,7 +30,7 @@ def WordtoVec():
 		_i=0
 		for words in total_sen:
 			_i+=1
-			words=total_sen[2526]
+			#words=total_sen[2526]
 			#print("Completed: ",_i/len(total_sen)*100)
 			if len(words)<3:
 				continue
