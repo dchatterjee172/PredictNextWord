@@ -1,4 +1,15 @@
 import numpy as np
+def binsearch(words,d):
+	a,b=0,len(words)-1
+	mid=int((a+b)/2)
+	while(a<=b):
+		if words[mid]==d:
+			return mid
+		elif words[mid]<d:
+			a=mid+1
+		else:
+			b=mid-1
+		mid=int((a+b)/2)	
 def PrepareData(worddimy):
 	count=0
 	dictionary,good_sentence,bad_sentence,total_sen=set(),list(),list(),list()
@@ -33,7 +44,7 @@ def PrepareData(worddimy):
 	with open ("sentence.txt","w") as sen_file:
 		for words in total_sen:
 			for x in range(0,len(words)-1):
-				words[x]=str(dictionary.index(words[x]))
+				words[x]=str(binsearch(dictionary,words[x]))
 			sen_file.write(" ".join(words)+"\n")
 		sen_file.close()	
 	wordvec=np.random.uniform(-2,2,(len(dictionary),5,worddimy))
