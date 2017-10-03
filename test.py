@@ -28,6 +28,7 @@ def WordtoVec():
 	with tf.Session() as sess:
 		co=np.ones(shape=(worddimy,1))
 		_i=0
+		_100loss=0
 		for words in total_sen:
 			_i+=1
 			#words=total_sen[2526]
@@ -51,8 +52,12 @@ def WordtoVec():
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res}
 					z=sess.run([state,loss],feed_dict=inp)
 					states[w]=z[0]
-					print("loss: ",z[1][0][0])
+					#print("loss: ",z[1][0][0])
 					_loss=z[1][0][0]
+			_100loss+=_loss
+			if _i%100==0:
+				print("loss",_100loss)
+				_100loss=0
 			if(_loss<0.00000001):
 				continue
 			dpres=[[0]]
