@@ -1,49 +1,14 @@
 import tensorflow as tf
 import numpy as np
 import random as rn
+import data
 dictionary=set()
 good_sentence=list()
 bad_sentence=list()
 total_sen=list()
 wordvec=0
 worddimy=4
-def PrepareData():
-    count=0
-    global dictionary,good_sentence,bad_sentence,wordvec,total_sen
-    with open("movie_lines.txt",'r') as data_file:
-        for sent in data_file:
-            sen=sent.split(" +++$+++ ")
-            sen=sen[len(sen)-1].split(" ")
-            f=1
-            for w in range(0,len(sen)):
-            	sen[w]=sen[w].replace("\n","")
-            	sen[w]=sen[w].replace(".","")
-            	sen[w]=sen[w].replace("\"","")
-            	sen[w]=sen[w].replace("?","")
-            	sen[w]=sen[w].replace("!","")
-            	sen[w]=sen[w].replace(",","")
-            	sen[w]=sen[w].replace("-","")
-            	sen[w]=sen[w].replace("\97","")
-            	sen[w]=sen[w].replace(":","")
-            	sen[w]=sen[w].replace("</u>","")
-            	sen[w]=sen[w].replace("<u>","")
-            	sen[w]=sen[w].replace("+","")
-            	sen[w]=sen[w].replace("$","")
-            	sen[w]=sen[w].lower()
-            	sen[w]=sen[w].strip()
-            	dictionary.add(sen[w])
-            	#print(sen[w])
-            bsen=sen.copy()
-            sen.append(1)
-            good_sentence.append(sen)
-            np.random.shuffle(bsen)
-            bsen.append(-1)
-            bad_sentence.append(bsen)
-    total_sen=good_sentence+bad_sentence
-    np.random.shuffle(total_sen)
-    dictionary=list(dictionary)
-    print(len(dictionary))
-    wordvec=np.random.uniform(-2,2,(len(dictionary),5,worddimy))
+
 def WordtoVec():
 	dt=tf.float32
 	pre=tf.placeholder(name="pre",dtype=dt,shape=(1,1))
@@ -110,5 +75,5 @@ def WordtoVec():
 						inp={actx:x_,pre:[[0]],coef:co,actual:res,pregrad:dpres}
 						z=sess.run(dx,feed_dict=inp)
 						wordvec[k]-=z[0].reshape(5,worddimy)*.1
-PrepareData()
+dictionary,good_sentence,bad_sentence,wordvec,total_sen=data.PrepareData(worddimy)
 WordtoVec()
