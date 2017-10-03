@@ -26,18 +26,33 @@ def WordtoVec():
 	dpre=tf.gradients(state,pre,grad_ys=pregrad)
 	dx=tf.gradients(state,x,grad_ys=pregrad)
 	with tf.Session() as sess:
-		co=np.ones(shape=(worddimy,1))
+		co=np.random.uniform(-2,2,(worddimy,1))
 		_i=0
-		_100loss=0
-		for words in total_sen:
-			_i+=1
+		_bloss=0
+		_loss=0
+		batch_mem=20
+		trainingpbatch=1
+		it=0
+		while it<len(total_sen):
 			#words=total_sen[2526]
 			#print("Completed: ",_i/len(total_sen)*100)
+			words=total_sen[it]
+			it+=1
 			if len(words)<3:
 				continue
+			_i+=1
+			if _i==batch_mem:
+				if trainingpbatch>0:
+					it-=_i
+					_i=1
+					trainingpbatch-=1
+				else:
+					_i=1
+					trainingpbatch=1
+					print("loss ",_bloss/batch_mem)
+				_bloss=0
 			states=np.zeros(shape=(len(words)-1,1,1))
 			res=np.array(int(words[len(words)-1])).reshape(1,1)
-			_loss=0
 			for w in range(0,len(words)-1):
 				k=int(words[w])
 				x_=wordvec[k].reshape(5,1,worddimy)
@@ -54,10 +69,7 @@ def WordtoVec():
 					states[w]=z[0]
 					#print("loss: ",z[1][0][0])
 					_loss=z[1][0][0]
-			_100loss+=_loss
-			if _i%100==0:
-				print("loss",_100loss)
-				_100loss=0
+			_bloss+=_loss
 			if(_loss<0.00000001):
 				continue
 			dpres=[[0]]

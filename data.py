@@ -10,6 +10,7 @@ def binsearch(words,d):
 		else:
 			b=mid-1
 		mid=int((a+b)/2)	
+	return -1
 def PrepareData(worddimy):
 	dictionary,good_sentence,bad_sentence,total_sen=set(),list(),list(),list()
 	with open("movie_lines.txt",'r') as data_file:
