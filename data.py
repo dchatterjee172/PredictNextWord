@@ -11,7 +11,7 @@ def binsearch(words,d):
 			b=mid-1
 		mid=int((a+b)/2)	
 	return -1
-def PrepareData(worddimy):
+def PrepareData(worddimx,worddimy):
 	dictionary,good_sentence,bad_sentence,total_sen=set(),list(),list(),list()
 	with open("movie_lines.txt",'r') as data_file:
 		for sent in data_file:
@@ -49,7 +49,7 @@ def PrepareData(worddimy):
 		sen_file.close()	
 	wordvec=np.random.uniform(-2,2,(len(dictionary),5,worddimy))
 	return dictionary,good_sentence,bad_sentence,wordvec,total_sen
-def GetData(worddimy):
+def GetData(worddimx,worddimy):
 	dictionary,total_sen=list(),list()
 	with open("words.txt","r") as word_file:
 		x=word_file.read()
@@ -62,5 +62,5 @@ def GetData(worddimy):
 			words=words.split(" ")
 			total_sen.append(words)
 		sen_file.close()
-	wordvec=np.random.uniform(-2,2,(len(dictionary),5,worddimy))
+	wordvec=np.random.uniform(-2,2,(len(dictionary),worddimx,worddimy))
 	return dictionary,total_sen,wordvec
