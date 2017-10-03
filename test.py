@@ -75,5 +75,6 @@ def WordtoVec():
 						inp={actx:x_,pre:[[0]],coef:co,actual:res,pregrad:dpres}
 						z=sess.run(dx,feed_dict=inp)
 						wordvec[k]-=z[0].reshape(5,worddimy)*.1
-dictionary,good_sentence,bad_sentence,wordvec,total_sen=data.PrepareData(worddimy)
+#dictionary,good_sentence,bad_sentence,wordvec,total_sen=data.PrepareData(worddimy)
+dictionary,total_sen,wordvec=data.GetData(worddimy)
 WordtoVec()
