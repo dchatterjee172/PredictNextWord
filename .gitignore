@@ -104,3 +104,4 @@ ENV/
 *.swo
 ~*
 *~
+*.localhost.localdomain
