@@ -19,7 +19,8 @@ def PrepareData(worddimx,worddimy):
 		for sen in data_file:
 			sen=sen.replace("\n","")
 			sen=sen.split("\t")
-			for w in range(1,len(sen)):
+			sen.pop(0)
+			for w in range(0,len(sen)):
 				sen[w]=sen[w].lower()
 				sen[w]=sen[w].strip()
 				dictionary.add(sen[w])
