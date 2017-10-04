@@ -99,9 +99,8 @@ ENV/
 
 # mypy
 .mypy_cache/
-
-
 #vim
 *.swp
 *.swo
+~*
 *~
