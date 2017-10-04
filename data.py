@@ -17,6 +17,8 @@ def PrepareData(worddimx,worddimy):
 		for sent in data_file:
 			sen=sent.split(" +++$+++ ")
 			sen=sen[len(sen)-1].split(" ")
+			if len(sen)<4:
+				continue
 			bad_char=["\n","<u>","<html>","</html>","<pre>","</pre>","\t","=","<b>","<i>","</u>","</b>","</i>","\97",".","\"","\'","?","!",",","-",":","+","*","_","$","`",";","[","]","&","<",">","~","|","{","}","(",")"]
 			for w in range(0,len(sen)):
 				sen[w]=sen[w].lower()
