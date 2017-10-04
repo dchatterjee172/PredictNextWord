@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import random as rn
 import data
+import data1
 dictionary=set()
 good_sentence=list()
 bad_sentence=list()
@@ -93,7 +94,7 @@ def WordtoVec():
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res}
 					z=sess.run([dxlast,dstatelast,dcoeflast],feed_dict=inp)
 					wordvec[k]-=z[0][0].reshape(worddimx,worddimy)*.1
-					_dcoef+=z[2][0]
+					#_dcoef+=z[2][0]
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,pregrad:z[1][0]}
 					dpres=(sess.run(dpre,feed_dict=inp))[0]
 				else:
@@ -101,14 +102,14 @@ def WordtoVec():
 						inp={actx:x_,pre:states[w-1],coef:co,actual:res,pregrad:dpres}
 						z=sess.run([dpre,dx,dcoef],feed_dict=inp)
 						dpres=z[0][0]
-						_dcoef+=z[2][0]
+						#_dcoef+=z[2][0]
 						wordvec[k]-=z[1][0].reshape(worddimx,worddimy)*.1
 					else:
 						inp={actx:x_,pre:np.zeros(shape=(1,hiddens)),coef:co,actual:res,pregrad:dpres}
 						z=sess.run([dx,dcoef],feed_dict=inp)
 						wordvec[k]-=z[0][0].reshape(worddimx,worddimy)*.1
-						_dcoef+=z[1][0]
+						#_dcoef+=z[1][0]
 				#co-=_dcoef*.1
-#dictionary,good_sentence,bad_sentence,wordvec,total_sen=data.PrepareData(worddimx,worddimy)
-dictionary,total_sen,wordvec=data.GetData(worddimx,worddimy)
+#dictionary,good_sentence,bad_sentence,wordvec,total_sen=data1.PrepareData(worddimx,worddimy)
+dictionary,total_sen,wordvec=data1.GetData(worddimx,worddimy)
 WordtoVec()
