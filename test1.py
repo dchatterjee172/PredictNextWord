@@ -1,3 +1,4 @@
+#Will try a new model here
 import tensorflow as tf
 import numpy as np
 import data

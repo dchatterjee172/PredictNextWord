@@ -45,7 +45,7 @@ def PrepareData(worddimx,worddimy):
 				words[x]=str(binsearch(dictionary,words[x]))
 			sen_file.write(" ".join(words)+"\n")
 		sen_file.close()	
-	wordvec=np.random.uniform(-2,2,(len(dictionary),5,worddimy))
+	wordvec=np.random.uniform(-3,3,(len(dictionary),5,worddimy))
 	return dictionary,good_sentence,bad_sentence,wordvec,total_sen
 def GetData(worddimx,worddimy):
 	dictionary,total_sen=list(),list()
@@ -60,6 +60,6 @@ def GetData(worddimx,worddimy):
 			words=words.split(" ")
 			total_sen.append(words)
 		sen_file.close()
-	wordvec=np.random.uniform(-2,2,(len(dictionary),worddimx,worddimy))
+	wordvec=np.random.uniform(-3,3,(len(dictionary),worddimx,worddimy))
 	return dictionary,total_sen,wordvec
 					
