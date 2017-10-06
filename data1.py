@@ -27,13 +27,27 @@ def PrepareData(worddimx,worddimy):
 			bsen=sen.copy()
 			sen.append("1")
 			good_sentence.append(sen)
-			np.random.shuffle(bsen)
+			#np.random.shuffle(bsen)
 			bsen.append("-1")
 			bad_sentence.append(bsen)
-	total_sen=good_sentence+bad_sentence
-	np.random.shuffle(total_sen)
+	#total_sen=good_sentence+bad_sentence
+	#np.random.shuffle(total_sen)
 	dictionary=list(dictionary)
 	dictionary.sort()
+	for sen in bad_sentence:
+		a=np.random.randint(0,5)
+		b=np.random.randint(0,len(dictionary))
+		sen[a]=dictionary[b]
+	a,b=0,0
+	while b<len(good_sentence):
+		if(a==b):
+			total_sen.append(good_sentence[a])
+			a=a+1
+		else:
+			total_sen.append(bad_sentence[b])
+			b=b+1
+	#total_sen=good_sentence+bad_sentence
+	#np.random.shuffle(total_sen)
 	print(len(dictionary))
 	with open("~words.txt","w") as word_file:
 		for x in range(0,len(dictionary)):
@@ -60,6 +74,7 @@ def GetData(worddimx,worddimy):
 			words=words.split(" ")
 			total_sen.append(words)
 		sen_file.close()
-	wordvec=np.random.uniform(-3,3,(len(dictionary),worddimx,worddimy))
+	#np.random.shuffle(total_sen)
+	wordvec=np.random.uniform(-1,1,(len(dictionary),worddimx,worddimy))
 	return dictionary,total_sen,wordvec
 					

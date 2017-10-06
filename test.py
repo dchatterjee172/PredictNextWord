@@ -8,8 +8,8 @@ good_sentence=list()
 bad_sentence=list()
 total_sen=list()
 wordvec=0
-worddimy=10
-worddimx=20
+worddimy=5
+worddimx=10
 hiddens=20
 _loop=1
 def sig(signal,frame):
@@ -45,11 +45,11 @@ def WordtoVec():
 	_graph=open("~graph","w")
 	with tf.Session() as sess:
 		writer = tf.summary.FileWriter("tfg", sess.graph)
-		co=np.random.uniform(-2,2,(worddimx,worddimy,hiddens))
+		co=np.random.uniform(-3,3,(worddimx,worddimy,hiddens))
 		_i=0
 		_bloss=0
 		_loss=0
-		batch_mem=10
+		batch_mem=100
 		trainingpbatch=0
 		it=0
 		c=0
@@ -78,6 +78,7 @@ def WordtoVec():
 			res=np.array(int(words[len(words)-1])).reshape(1,1)
 			for w in range(0,len(words)-1):
 				k=int(words[w])
+				#print(dictionary[int(words[w])])
 				x_=wordvec[k].reshape(worddimx,1,worddimy)
 				if w<len(words)-2:
 					if w==0:
@@ -103,7 +104,7 @@ def WordtoVec():
 				if w==len(words)-2:
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res}
 					z=sess.run([dxlast,dstatelast,dcoeflast],feed_dict=inp)
-					wordvec[k]-=z[0][0].reshape(worddimx,worddimy)*abs(np.random.normal(0,.2))
+					wordvec[k]-=z[0][0].reshape(worddimx,worddimy)*abs(np.random.normal(0,.1*_loss))
 					#print(z[0][0].reshape(worddimx,worddimy)*.5)
 					#_dcoef+=z[2][0]
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,pregrad:z[1][0]}
@@ -114,12 +115,12 @@ def WordtoVec():
 						z=sess.run([dpre,dx,dcoef],feed_dict=inp)
 						dpres=z[0][0]
 						#_dcoef+=z[2][0]
-						wordvec[k]-=z[1][0].reshape(worddimx,worddimy)*abs(np.random.normal(0,.2))
+						wordvec[k]-=z[1][0].reshape(worddimx,worddimy)*abs(np.random.normal(0,.1*_loss))
 						#print(z[1][0].reshape(worddimx,worddimy)*.4)
 					else:
 						inp={actx:x_,pre:np.zeros(shape=(1,hiddens)),coef:co,actual:res,pregrad:dpres}
 						z=sess.run([dx,dcoef],feed_dict=inp)
-						wordvec[k]-=z[0][0].reshape(worddimx,worddimy)*abs(np.random.normal(0,.2))
+						wordvec[k]-=z[0][0].reshape(worddimx,worddimy)*abs(np.random.normal(0,.1*_loss))
 						#print(z[0][0].reshape(worddimx,worddimy)*.4)
 						#_dcoef+=z[1][0]
 				#co-=_dcoef*.1
