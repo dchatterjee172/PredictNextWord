@@ -103,7 +103,7 @@ def WordtoVec():
 				continue
 			_x=0
 			if(it%2!=0):
-				_prevword=sentence[it-1]
+				_prevword=total_sen[it-1]
 				while _x<len(words)-1:
 					if(words[_x]!=_prevword[_x]):
 						break
