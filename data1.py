@@ -11,7 +11,7 @@ def binsearch(words,d):
 			a=mid+1
 		else:
 			b=mid-1
-		mid=int((a+b)/2)	
+		mid=int((a+b)/2)
 	return -1
 def PrepareData(worddimx,worddimy):
 	dictionary,good_sentence,bad_sentence,total_sen=set(),list(),list(),list()
@@ -58,7 +58,7 @@ def PrepareData(worddimx,worddimy):
 			for x in range(0,len(words)-1):
 				words[x]=str(binsearch(dictionary,words[x]))
 			sen_file.write(" ".join(words)+"\n")
-		sen_file.close()	
+		sen_file.close()
 	wordvec=np.random.uniform(-2,2,(len(dictionary),5,worddimy))
 	return dictionary,good_sentence,bad_sentence,wordvec,total_sen
 def GetData(worddimx,worddimy):
@@ -77,4 +77,3 @@ def GetData(worddimx,worddimy):
 	#np.random.shuffle(total_sen)
 	wordvec=np.random.uniform(-1,1,(len(dictionary),worddimx,worddimy))
 	return dictionary,total_sen,wordvec
-					

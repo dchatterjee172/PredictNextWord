@@ -8,9 +8,9 @@ good_sentence=list()
 bad_sentence=list()
 total_sen=list()
 wordvec=0
-worddimy=200
+worddimy=300
 worddimx=1
-hiddens=20
+hiddens=150
 _loop=1
 def sig(signal,frame):
 	global _loop
@@ -26,7 +26,7 @@ def WordtoVec():
 	pre=tf.placeholder(name="pre",dtype=dt,shape=(1,hiddens))
 	coef=tf.placeholder(name="coef",dtype=dt,shape=(worddimx,worddimy,hiddens))
 	coef1=tf.placeholder(name="coef",dtype=dt,shape=(hiddens,1))
-	coef2=tf.placeholder(name="coef",dtype=dt,shape=(1,hiddens))
+	coef2=tf.placeholder(name="coef",dtype=dt,shape=(hiddens,hiddens))
 	actual=tf.placeholder(name="actual",dtype=dt,shape=(1,1))
 	pregrad=tf.placeholder(name="stategradactual",dtype=dt,shape=(1,hiddens))
 	x=tf.get_variable("x1",shape=[worddimx,1,worddimy])
@@ -35,7 +35,7 @@ def WordtoVec():
 	rawstate=tf.zeros(shape=(1,hiddens),dtype=dt,name="rawstate")
 	v=tf.constant(0)
 	calrawstate=tf.while_loop(cond,body,[rawstate,x,v,coef])[0]
-	state=(calrawstate+tf.multiply(pre,coef2))
+	state=(calrawstate+tf.matmul(pre,coef2))
 	final=tf.nn.softsign(tf.matmul(state,coef1))
 	loss=tf.square(final-actual)
 	dxlast=tf.gradients(loss,x,name="lastxgrad")
@@ -47,14 +47,14 @@ def WordtoVec():
 	_graph=open("~graph","w")
 	with tf.Session() as sess:
 		writer = tf.summary.FileWriter("tfg", sess.graph)
-		co=np.random.uniform(-2,2,(worddimx,worddimy,hiddens))
-		co1=np.random.uniform(1,1,(hiddens,1))
-		co2=np.random.uniform(0,1,(1,hiddens))
+		co=np.random.uniform(-.1,.1,(worddimx,worddimy,hiddens))
+		co1=np.random.uniform(-.1,.1,(hiddens,1))
+		co2=np.random.uniform(-.1,.1,(hiddens,hiddens))
 		dco1=np.zeros(shape=(hiddens,1))
 		_i=0
 		_bloss=0
 		_loss=0
-		batch_mem=4
+		batch_mem=10
 		trainingpbatch=0
 		it=0
 		c=0
@@ -76,8 +76,6 @@ def WordtoVec():
 					print(it," loss ",_bloss/batch_mem)
 					c+=1
 					_graph.write(str(c)+" "+str(_bloss/batch_mem)+"\n")
-					#co1-=dco1*.01
-					#dco1=np.zeros(shape=(hiddens,1))
 				_bloss=0
 			states=np.zeros(shape=(len(words)-1,1,hiddens))
 			res=np.array(int(words[len(words)-1])).reshape(1,1)
@@ -94,8 +92,9 @@ def WordtoVec():
 					states[w]=sess.run(state,feed_dict=inp)
 				else:
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,coef2:co2,coef1:co1}
-					z=sess.run([state,loss],feed_dict=inp)
-					#print(z[0][0],res)
+					z=sess.run([state,loss,final],feed_dict=inp)
+					#print(z[2][0],res)
+					#print(z[0])
 					states[w]=z[0]
 					_loss=z[1][0][0]
 			_bloss+=_loss
@@ -109,7 +108,7 @@ def WordtoVec():
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,coef2:co2,coef1:co1}
 					z=sess.run([dxlast,dstatelast,dcoef1],feed_dict=inp)
 					wordvec[k]-=z[0][0].reshape(worddimx,worddimy)*.1
-					dco1+=z[2][0]
+					#co1-=z[2][0]*.1
 					#print(z[0][0].reshape(worddimx,worddimy)*.5)
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,pregrad:z[1][0],coef2:co2,coef1:co1}
 					dpres=(sess.run(dpre,feed_dict=inp))[0]
@@ -118,7 +117,6 @@ def WordtoVec():
 						inp={actx:x_,pre:states[w-1],coef:co,actual:res,pregrad:dpres,coef2:co2}
 						z=sess.run([dpre,dx],feed_dict=inp)
 						dpres=z[0][0]
-						#_dcoef+=z[2][0]
 						wordvec[k]-=z[1][0].reshape(worddimx,worddimy)*.1
 						#print(z[1][0].reshape(worddimx,worddimy)*.4)
 					else:
