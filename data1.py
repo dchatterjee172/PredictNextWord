@@ -60,7 +60,7 @@ def PrepareData(worddimx,worddimy):
 			sen_file.write(" ".join(words)+"\n")
 		sen_file.close()
 	wordvec=np.random.uniform(-2,2,(len(dictionary),5,worddimy))
-	return dictionary,good_sentence,bad_sentence,wordvec,total_sen
+	return good_sentence,bad_sentence,wordvec,total_sen
 def GetData(worddimx,worddimy):
 	dictionary,total_sen=list(),list()
 	with open("~words.txt","r") as word_file:
@@ -76,4 +76,4 @@ def GetData(worddimx,worddimy):
 		sen_file.close()
 	#np.random.shuffle(total_sen)
 	wordvec=np.random.uniform(-1,1,(len(dictionary),worddimx,worddimy))
-	return dictionary,total_sen,wordvec
+	return total_sen,wordvec

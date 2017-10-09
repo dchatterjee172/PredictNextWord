@@ -3,7 +3,6 @@ import numpy as np
 import data
 import data1
 import signal
-dictionary=set()
 good_sentence=list()
 bad_sentence=list()
 total_sen=list()
@@ -127,6 +126,6 @@ def WordtoVec():
 				#co-=_dcoef*.1
 	_graph.close()
 signal.signal(signal.SIGINT, sig)
-#dictionary,good_sentence,bad_sentence,wordvec,total_sen=data1.PrepareData(worddimx,worddimy)
-dictionary,total_sen,wordvec=data1.GetData(worddimx,worddimy)
+#good_sentence,bad_sentence,wordvec,total_sen=data1.PrepareData(worddimx,worddimy)
+total_sen,wordvec=data1.GetData(worddimx,worddimy)
 WordtoVec()
