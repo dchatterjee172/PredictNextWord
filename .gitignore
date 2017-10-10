@@ -105,3 +105,4 @@ ENV/
 ~*
 *~
 *.localhost.localdomain
+*.out
