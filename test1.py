@@ -53,7 +53,7 @@ def WordtoVec():
 		_i=0
 		_bloss=0
 		_loss=0
-		batch_mem=200
+		batch_mem=1000
 		trainingpbatch=1
 		it=0
 		c=0
@@ -128,4 +128,4 @@ def WordtoVec():
 signal.signal(signal.SIGINT, sig)
 #good_sentence,bad_sentence,wordvec,total_sen=data1.PrepareData(worddimx,worddimy)
 total_sen,wordvec=data1.GetData(worddimx,worddimy)
-WordtoVec()
+#WordtoVec()

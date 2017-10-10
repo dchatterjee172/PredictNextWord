@@ -1,6 +1,7 @@
 """ I am creating this new data genaration script for the dataset i got from https://www.ngrams.info/
 As i cannot push their dataset, only this file will be there"""
 import numpy as np
+import copy
 def binsearch(words,d):
 	a,b=0,len(words)-1
 	mid=int((a+b)/2)
@@ -24,12 +25,16 @@ def PrepareData(worddimx,worddimy):
 				sen[w]=sen[w].lower()
 				sen[w]=sen[w].strip()
 				dictionary.add(sen[w])
-			bsen=sen.copy()
+			#bsen=sen.copy()
 			sen.append("1")
 			good_sentence.append(sen)
 			#np.random.shuffle(bsen)
-			bsen.append("-1")
-			bad_sentence.append(bsen)
+			#bsen.append("-1")
+			#bad_sentence.append(bsen)
+	np.random.shuffle(good_sentence)
+	bad_sentence=copy.deepcopy(good_sentence)
+	for sen in bad_sentence:
+		sen[-1]="-1"
 	dictionary=list(dictionary)
 	dictionary.sort()
 	for sen in bad_sentence:
