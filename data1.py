@@ -30,8 +30,6 @@ def PrepareData(worddimx,worddimy):
 			#np.random.shuffle(bsen)
 			bsen.append("-1")
 			bad_sentence.append(bsen)
-	#total_sen=good_sentence+bad_sentence
-	#np.random.shuffle(total_sen)
 	dictionary=list(dictionary)
 	dictionary.sort()
 	for sen in bad_sentence:
@@ -59,7 +57,7 @@ def PrepareData(worddimx,worddimy):
 				words[x]=str(binsearch(dictionary,words[x]))
 			sen_file.write(" ".join(words)+"\n")
 		sen_file.close()
-	wordvec=np.random.uniform(-2,2,(len(dictionary),5,worddimy))
+	wordvec=np.random.uniform(-1,1,(len(dictionary),worddimx,worddimy))
 	return good_sentence,bad_sentence,wordvec,total_sen
 def GetData(worddimx,worddimy):
 	dictionary,total_sen=list(),list()
@@ -68,7 +66,7 @@ def GetData(worddimx,worddimy):
 		x=x.replace("\n","")
 		dictionary=x.split(" ")
 		word_file.close()
-	with open("~sentence.txt","r") as sen_file:
+	with open("sentence.txt","r") as sen_file:
 		for words in sen_file:
 			words=words.replace("\n","")
 			words=words.split(" ")
