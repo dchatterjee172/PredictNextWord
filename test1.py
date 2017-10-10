@@ -128,4 +128,4 @@ def WordtoVec():
 signal.signal(signal.SIGINT, sig)
 #good_sentence,bad_sentence,wordvec,total_sen=data1.PrepareData(worddimx,worddimy)
 total_sen,wordvec=data1.GetData(worddimx,worddimy)
-#WordtoVec()
+WordtoVec()
