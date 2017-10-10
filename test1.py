@@ -7,9 +7,9 @@ good_sentence=list()
 bad_sentence=list()
 total_sen=list()
 wordvec=0
-worddimy=200
+worddimy=400
 worddimx=1
-hiddens=50
+hiddens=100
 _loop=1
 def sig(signal,frame):
 	global _loop
@@ -46,14 +46,14 @@ def WordtoVec():
 	_graph=open("~graph","w")
 	with tf.Session() as sess:
 		writer = tf.summary.FileWriter("tfg", sess.graph)
-		co=np.random.uniform(-.5,.5,(worddimx,worddimy,hiddens))
-		co1=np.random.uniform(-.2,.2,(hiddens,1))
+		co=np.random.uniform(-.2,.2,(worddimx,worddimy,hiddens))
+		co1=np.random.uniform(-.18,.18,(hiddens,1))
 		co2=np.random.uniform(-.15,.15,(hiddens,hiddens))
 		dco1=np.zeros(shape=(hiddens,1))
 		_i=0
 		_bloss=0
 		_loss=0
-		batch_mem=20
+		batch_mem=200
 		trainingpbatch=1
 		it=0
 		c=0
