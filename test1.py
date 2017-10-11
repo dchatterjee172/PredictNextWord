@@ -7,7 +7,7 @@ good_sentence=list()
 bad_sentence=list()
 total_sen=list()
 wordvec=0
-worddimy=400
+worddimy=200
 worddimx=1
 hiddens=100
 _loop=1
@@ -36,7 +36,8 @@ def WordtoVec():
 	calrawstate=tf.while_loop(cond,body,[rawstate,x,v,coef])[0]
 	state=(calrawstate+tf.matmul(pre,coef2))
 	final=tf.nn.softsign(tf.matmul(state,coef1))
-	loss=tf.square(final-actual)
+	#loss=tf.square(final-actual)
+	loss=tf.losses.absolute_difference(actual,final)
 	dxlast=tf.gradients(loss,x,name="lastxgrad")
 	dstatelast=tf.gradients(loss,state,name="laststategrad")
 	dcoeflast=tf.gradients(loss,coef,name="laststategrad")
@@ -53,7 +54,7 @@ def WordtoVec():
 		_i=0
 		_bloss=0
 		_loss=0
-		batch_mem=1000
+		batch_mem=10
 		trainingpbatch=1
 		it=0
 		c=0
@@ -95,7 +96,8 @@ def WordtoVec():
 					#print(z[2][0],res)
 					#print(z[0])
 					states[w]=z[0]
-					_loss=z[1][0][0]
+					#_loss=z[1][0][0]
+					_loss=z[1]
 			_bloss+=_loss
 			if(_loss<0.00000001):
 				continue
