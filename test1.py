@@ -7,7 +7,7 @@ good_sentence=list()
 bad_sentence=list()
 total_sen=list()
 wordvec=0
-worddimy=200
+worddimy=500
 worddimx=1
 hiddens=100
 _loop=1
@@ -48,14 +48,14 @@ def WordtoVec():
 	with tf.Session() as sess:
 		writer = tf.summary.FileWriter("tfg", sess.graph)
 		co=np.random.uniform(-.2,.2,(worddimx,worddimy,hiddens))
-		co1=np.random.uniform(-.18,.18,(hiddens,1))
+		co1=np.random.uniform(-.15,.15,(hiddens,1))
 		co2=np.random.uniform(-.15,.15,(hiddens,hiddens))
 		dco1=np.zeros(shape=(hiddens,1))
 		_i=0
 		_bloss=0
 		_loss=0
-		batch_mem=10
-		trainingpbatch=1
+		batch_mem=50000
+		trainingpbatch=0
 		it=0
 		c=0
 		while it<len(total_sen) and _loop:
@@ -72,7 +72,7 @@ def WordtoVec():
 				else:
 					it=0
 					_i=0
-					trainingpbatch=1
+					trainingpbatch=0
 					print(it," loss ",_bloss/batch_mem)
 					c+=1
 					_graph.write(str(c)+" "+str(_bloss/batch_mem)+"\n")
@@ -93,13 +93,13 @@ def WordtoVec():
 				else:
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,coef2:co2,coef1:co1}
 					z=sess.run([state,loss,final],feed_dict=inp)
-					#print(z[2][0],res)
+					print(z[2][0],res)
 					#print(z[0])
 					states[w]=z[0]
 					#_loss=z[1][0][0]
 					_loss=z[1]
 			_bloss+=_loss
-			if(_loss<0.00000001):
+			if(_loss<0.05):
 				continue
 			dpres=[[0]]
 			for w in reversed(range(0,len(words)-1)):
