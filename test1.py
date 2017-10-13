@@ -109,7 +109,7 @@ def WordtoVec():
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,coef2:co2,coef1:co1}
 					z=sess.run([dxlast,dstatelast,dcoef1],feed_dict=inp)
 					wordvec[k]=np.subtract(wordvec[k],z[0][0].reshape(worddimx,worddimy)*.15)
-					#co1-=z[2][0]*.1
+					co1=np.subtract(co1,z[2][0]*.15)
 					#print(z[0][0].reshape(worddimx,worddimy)*.5)
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,pregrad:z[1][0],coef2:co2,coef1:co1}
 					dpres=(sess.run(dpre,feed_dict=inp))[0]
@@ -125,7 +125,6 @@ def WordtoVec():
 						z=sess.run([dx],feed_dict=inp)
 						wordvec[k]=np.subtract(wordvec[k],z[0][0].reshape(worddimx,worddimy)*.15)
 						#print(z[0][0].reshape(worddimx,worddimy)*.4)
-				#co-=_dcoef*.1
 	_graph.close()
 signal.signal(signal.SIGINT, sig)
 #good_sentence,bad_sentence,wordvec,total_sen=data1.PrepareData(worddimx,worddimy)
