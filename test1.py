@@ -7,7 +7,7 @@ good_sentence=list()
 bad_sentence=list()
 total_sen=list()
 wordvec=0
-worddimy=500
+worddimy=400
 worddimx=1
 hiddens=100
 _loop=1
@@ -54,7 +54,7 @@ def WordtoVec():
 		_i=0
 		_bloss=0
 		_loss=0
-		batch_mem=50000
+		batch_mem=20
 		trainingpbatch=0
 		it=0
 		c=0
@@ -93,7 +93,7 @@ def WordtoVec():
 				else:
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,coef2:co2,coef1:co1}
 					z=sess.run([state,loss,final],feed_dict=inp)
-					print(z[2][0],res)
+					#print(z[2][0],res)
 					#print(z[0])
 					states[w]=z[0]
 					#_loss=z[1][0][0]
@@ -108,7 +108,7 @@ def WordtoVec():
 				if w==len(words)-2:
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,coef2:co2,coef1:co1}
 					z=sess.run([dxlast,dstatelast,dcoef1],feed_dict=inp)
-					wordvec[k]-=z[0][0].reshape(worddimx,worddimy)*.15
+					wordvec[k]=np.subtract(wordvec[k],z[0][0].reshape(worddimx,worddimy)*.15)
 					#co1-=z[2][0]*.1
 					#print(z[0][0].reshape(worddimx,worddimy)*.5)
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,pregrad:z[1][0],coef2:co2,coef1:co1}
@@ -118,12 +118,12 @@ def WordtoVec():
 						inp={actx:x_,pre:states[w-1],coef:co,actual:res,pregrad:dpres,coef2:co2}
 						z=sess.run([dpre,dx],feed_dict=inp)
 						dpres=z[0][0]
-						wordvec[k]-=z[1][0].reshape(worddimx,worddimy)*.15
+						wordvec[k]=np.subtract(wordvec[k],z[1][0].reshape(worddimx,worddimy)*.15)
 						#print(z[1][0].reshape(worddimx,worddimy)*.4)
 					else:
 						inp={actx:x_,pre:np.zeros(shape=(1,hiddens)),coef:co,actual:res,pregrad:dpres,coef2:co2}
 						z=sess.run([dx],feed_dict=inp)
-						wordvec[k]-=z[0][0].reshape(worddimx,worddimy)*.15
+						wordvec[k]=np.subtract(wordvec[k],z[0][0].reshape(worddimx,worddimy)*.15)
 						#print(z[0][0].reshape(worddimx,worddimy)*.4)
 				#co-=_dcoef*.1
 	_graph.close()
