@@ -9,7 +9,7 @@ total_sen=list()
 wordvec=0
 worddimy=400
 worddimx=1
-hiddens=100
+hiddens=200
 _loop=1
 def sig(signal,frame):
 	global _loop
@@ -50,6 +50,10 @@ def WordtoVec():
 		co=np.random.uniform(-.2,.2,(worddimx,worddimy,hiddens))
 		co1=np.random.uniform(-.15,.15,(hiddens,1))
 		co2=np.random.uniform(-.15,.15,(hiddens,hiddens))
+		for x in range(0,hiddens):
+			for y in range (0, hiddens):
+				if .55>np.random.uniform(0,1):
+					co2[x][y]=0
 		dco1=np.zeros(shape=(hiddens,1))
 		_i=0
 		_bloss=0
@@ -109,7 +113,7 @@ def WordtoVec():
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,coef2:co2,coef1:co1}
 					z=sess.run([dxlast,dstatelast,dcoef1],feed_dict=inp)
 					wordvec[k]=np.subtract(wordvec[k],z[0][0].reshape(worddimx,worddimy)*.15)
-					co1=np.subtract(co1,z[2][0]*.15)
+					#co1=np.subtract(co1,z[2][0]*.15)
 					#print(z[0][0].reshape(worddimx,worddimy)*.5)
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,pregrad:z[1][0],coef2:co2,coef1:co1}
 					dpres=(sess.run(dpre,feed_dict=inp))[0]
