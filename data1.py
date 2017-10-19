@@ -66,12 +66,12 @@ def PrepareData(worddimx,worddimy):
 	return good_sentence,bad_sentence,wordvec,total_sen
 def GetData(worddimx,worddimy):
 	dictionary,total_sen=list(),list()
-	"""with open("~words.txt","r") as word_file:
+	with open("~words.txt","r") as word_file:
 		x=word_file.read()
 		x=x.replace("\n","")
 		dictionary=x.split(" ")
-		word_file.close()"""
-	z=25008
+		word_file.close()
+	#z=25008
 	with open("sentence.txt","r") as sen_file:
 		for words in sen_file:
 			words=words.replace("\n","")
@@ -79,5 +79,5 @@ def GetData(worddimx,worddimy):
 			total_sen.append(words)
 		sen_file.close()
 	#np.random.shuffle(total_sen)
-	wordvec=np.random.uniform(-1,1,(z,worddimx,worddimy))
-	return total_sen,wordvec
+	wordvec=np.random.uniform(-1,1,(len(dictionary),worddimx,worddimy))
+	return dictionary,total_sen,wordvec

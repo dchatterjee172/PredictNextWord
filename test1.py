@@ -1,16 +1,34 @@
 import tensorflow as tf
 import numpy as np
-import data
 import data1
 import signal
+import tsne
 good_sentence=list()
 bad_sentence=list()
 total_sen=list()
+dictionary=list()
 wordvec=0
-worddimy=400
+worddimy=300
 worddimx=1
-hiddens=200
+hiddens=150
 _loop=1
+batch_mem=100
+trainingpbatch=0
+def start_tsne(file_name):
+	global batch_mem,total_sen,wordvec,dictionary
+	_dict=set()
+	for x in range(0,batch_mem):
+		for y in range(0,5):
+			_dict.add(int(total_sen[x][y]))
+	_dict=list(_dict)
+	vec=np.ones(shape=(len(_dict),worddimy))
+	for x in range(0,len(vec)):
+		vec[x]=wordvec[_dict[x]].reshape(worddimy)
+	y=tsne.tsne(vec, 2, 50, 20.0);
+	with open(file_name,"w") as graph:
+		for x in range(0,len(_dict)):
+			graph.write(dictionary[_dict[x]]+" "+str(y[x][0])+" "+str(y[x][1])+"\n")
+	graph.close()
 def sig(signal,frame):
 	global _loop
 	_loop=0
@@ -21,6 +39,7 @@ def body(rawstate,x,v,coef):
 def cond(rawstate,x,v,coef):
 	return v<worddimx
 def WordtoVec():
+	start_tsne("~wgraph0")
 	dt=tf.float32
 	pre=tf.placeholder(name="pre",dtype=dt,shape=(1,hiddens))
 	coef=tf.placeholder(name="coef",dtype=dt,shape=(worddimx,worddimy,hiddens))
@@ -52,16 +71,16 @@ def WordtoVec():
 		co2=np.random.uniform(-.15,.15,(hiddens,hiddens))
 		for x in range(0,hiddens):
 			for y in range (0, hiddens):
-				if .55>np.random.uniform(0,1):
+				if .5>np.random.uniform(0,1):
 					co2[x][y]=0
 		dco1=np.zeros(shape=(hiddens,1))
 		_i=0
 		_bloss=0
 		_loss=0
-		batch_mem=20
-		trainingpbatch=0
+		global batch_mem,trainingpbatch
 		it=0
 		c=0
+		_trainingpbatch=trainingpbatch
 		while it<len(total_sen) and _loop:
 			#words=total_sen[2526]
 			#print("Completed: ",_i/len(total_sen)*100)
@@ -69,14 +88,14 @@ def WordtoVec():
 			it+=1
 			_i+=1
 			if _i==batch_mem:
-				if trainingpbatch>0:
+				if _trainingpbatch>0:
 					it-=_i
 					_i=0
-					trainingpbatch-=1
+					_trainingpbatch-=1
 				else:
 					it=0
 					_i=0
-					trainingpbatch=0
+					_trainingpbatch=trainingpbatch
 					print(it," loss ",_bloss/batch_mem)
 					c+=1
 					_graph.write(str(c)+" "+str(_bloss/batch_mem)+"\n")
@@ -130,7 +149,8 @@ def WordtoVec():
 						wordvec[k]=np.subtract(wordvec[k],z[0][0].reshape(worddimx,worddimy)*.15)
 						#print(z[0][0].reshape(worddimx,worddimy)*.4)
 	_graph.close()
+	start_tsne("~wgraph1")
 signal.signal(signal.SIGINT, sig)
 #good_sentence,bad_sentence,wordvec,total_sen=data1.PrepareData(worddimx,worddimy)
-total_sen,wordvec=data1.GetData(worddimx,worddimy)
+dictionary,total_sen,wordvec=data1.GetData(worddimx,worddimy)
 WordtoVec()
