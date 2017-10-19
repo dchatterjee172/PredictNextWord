@@ -80,4 +80,5 @@ def GetData(worddimx,worddimy):
 		sen_file.close()
 	#np.random.shuffle(total_sen)
 	wordvec=np.random.uniform(-1,1,(len(dictionary),worddimx,worddimy))
+	#wordvec=np.random.normal(0,1,(len(dictionary),worddimx,worddimy))
 	return dictionary,total_sen,wordvec

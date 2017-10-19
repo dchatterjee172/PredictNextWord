@@ -12,7 +12,7 @@ worddimy=300
 worddimx=1
 hiddens=150
 _loop=1
-batch_mem=100
+batch_mem=40
 trainingpbatch=0
 def start_tsne(file_name):
 	global batch_mem,total_sen,wordvec,dictionary
@@ -102,6 +102,7 @@ def WordtoVec():
 				_bloss=0
 			states=np.zeros(shape=(len(words)-1,1,hiddens))
 			res=np.array(int(words[len(words)-1])).reshape(1,1)
+			_out=0
 			for w in range(0,len(words)-1):
 				k=int(words[w])
 				#print(dictionary[int(words[w])])
@@ -121,8 +122,10 @@ def WordtoVec():
 					states[w]=z[0]
 					#_loss=z[1][0][0]
 					_loss=z[1]
+					_out=z[2][0][0]
 			_bloss+=_loss
-			if(_loss<0.05):
+			#if(_loss<0.05):
+			if((_out<0 and res[0][0]<0 and _loss<0.5)or(_out>0 and res[0][0]>0 and _loss<0.5)):
 				continue
 			dpres=[[0]]
 			for w in reversed(range(0,len(words)-1)):
@@ -131,7 +134,7 @@ def WordtoVec():
 				if w==len(words)-2:
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,coef2:co2,coef1:co1}
 					z=sess.run([dxlast,dstatelast,dcoef1],feed_dict=inp)
-					wordvec[k]=np.subtract(wordvec[k],z[0][0].reshape(worddimx,worddimy)*.15)
+					wordvec[k]=np.subtract(wordvec[k],z[0][0].reshape(worddimx,worddimy)*.215)
 					#co1=np.subtract(co1,z[2][0]*.15)
 					#print(z[0][0].reshape(worddimx,worddimy)*.5)
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,pregrad:z[1][0],coef2:co2,coef1:co1}
@@ -141,12 +144,12 @@ def WordtoVec():
 						inp={actx:x_,pre:states[w-1],coef:co,actual:res,pregrad:dpres,coef2:co2}
 						z=sess.run([dpre,dx],feed_dict=inp)
 						dpres=z[0][0]
-						wordvec[k]=np.subtract(wordvec[k],z[1][0].reshape(worddimx,worddimy)*.15)
+						wordvec[k]=np.subtract(wordvec[k],z[1][0].reshape(worddimx,worddimy)*.215)
 						#print(z[1][0].reshape(worddimx,worddimy)*.4)
 					else:
 						inp={actx:x_,pre:np.zeros(shape=(1,hiddens)),coef:co,actual:res,pregrad:dpres,coef2:co2}
 						z=sess.run([dx],feed_dict=inp)
-						wordvec[k]=np.subtract(wordvec[k],z[0][0].reshape(worddimx,worddimy)*.15)
+						wordvec[k]=np.subtract(wordvec[k],z[0][0].reshape(worddimx,worddimy)*.215)
 						#print(z[0][0].reshape(worddimx,worddimy)*.4)
 	_graph.close()
 	start_tsne("~wgraph1")
