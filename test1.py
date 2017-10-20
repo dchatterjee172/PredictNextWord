@@ -12,7 +12,7 @@ worddimy=300
 worddimx=1
 hiddens=150
 _loop=1
-batch_mem=40
+batch_mem=10
 trainingpbatch=0
 def start_tsne(file_name):
 	global batch_mem,total_sen,wordvec,dictionary
@@ -117,7 +117,7 @@ def WordtoVec():
 				else:
 					inp={actx:x_,pre:states[w-1],coef:co,actual:res,coef2:co2,coef1:co1}
 					z=sess.run([state,loss,final],feed_dict=inp)
-					#print(z[2][0],res)
+					print(z[2][0],res)
 					#print(z[0])
 					states[w]=z[0]
 					#_loss=z[1][0][0]
