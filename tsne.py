@@ -19,8 +19,8 @@ def Hbeta(D = np.array([]), beta = 1.0):
 
 	# Compute P-row and corresponding perplexity
 	P = np.exp(-D.copy() * beta);
-	sumP = sum(P);
-	H = np.log(sumP+0.000001) + beta * np.sum(D * P) / sumP;
+	sumP = sum(P)+0.000001;
+	H = np.log(sumP) + beta * np.sum(D * P) / sumP;
 	P = P / sumP;
 	return H, P;
 
