@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from tsne import tsne
 
 
-dim = 150
+dim = 50
 lines = []
 word_index = {}
 word_occ = {}
@@ -11,7 +11,7 @@ count = 0
 
 with open('~w5_.txt') as data_file:  # https://www.ngrams.info/download_coca.asp
     for line in data_file:
-        if np.random.random() > 0.2:
+        if np.random.random() > 0.4:
             continue
         line = line.split('\t')
         line.pop(0)
@@ -27,7 +27,7 @@ with open('~w5_.txt') as data_file:  # https://www.ngrams.info/download_coca.asp
 
 print(len(lines))
 print(len(word_index))
-embedding_matrix = np.random.normal(size=(len(word_index), dim), scale=0.01)
+embedding_matrix = np.random.normal(size=(len(word_index), dim*2), scale=0.01)
 pmf = np.ones((len(word_index),))
 for word, num in word_index.items():
     pmf[num] = word_occ[word] ** 0.75
@@ -38,38 +38,38 @@ print(np.sum(pmf))
 def apply_derivative(a_index, b_index, choices):
     global embedding_matrix
     choices = np.setdiff1d(choices, np.array([a_index, b_index]))
-    temp = np.exp(np.matmul(embedding_matrix[choices, dim // 2:],
-                            embedding_matrix[a_index][:dim // 2]))
+    temp = np.exp(np.matmul(embedding_matrix[choices, dim:],
+                            embedding_matrix[a_index][:dim]))
     temp_with_b = np.append(temp, np.exp(np.dot(
-        embedding_matrix[a_index][:dim // 2], embedding_matrix[b_index][dim // 2:])))
+        embedding_matrix[a_index][:dim], embedding_matrix[b_index][dim:])))
     sum_temp = np.sum(temp_with_b)
-    delta_embedding_matrix = np.zeros((len(choices) + 2, dim // 2))
-    delta_embedding_matrix[-1] = embedding_matrix[b_index][dim // 2:] - \
-        (np.matmul(embedding_matrix[choices, dim // 2:].T, temp)
-         + embedding_matrix[b_index][dim // 2:] * temp_with_b[-1]) / sum_temp
-    delta_embedding_matrix[-2] = embedding_matrix[a_index][:dim // 2] - \
-        embedding_matrix[a_index][:dim // 2] * temp_with_b[-1] / sum_temp
+    delta_embedding_matrix = np.zeros((len(choices) + 2, dim))
+    delta_embedding_matrix[-1] = embedding_matrix[b_index][dim:] - \
+        (np.matmul(embedding_matrix[choices, dim:].T, temp)
+         + embedding_matrix[b_index][dim:] * temp_with_b[-1]) / sum_temp
+    delta_embedding_matrix[-2] = embedding_matrix[a_index][:dim] - \
+        embedding_matrix[a_index][:dim] * temp_with_b[-1] / sum_temp
 
-    delta_embedding_matrix[:-2, :] = -np.tile(np.expand_dims(embedding_matrix[a_index][:dim // 2], 0), (len(
-        choices), 1)) * np.tile(np.expand_dims(temp, 1), (1, dim // 2)) / sum_temp
+    delta_embedding_matrix[:-2, :] = -np.tile(np.expand_dims(embedding_matrix[a_index][:dim], 0), (len(
+        choices), 1)) * np.tile(np.expand_dims(temp, 1), (1, dim)) / sum_temp
 
-    embedding_matrix[choices, dim // 2:] += 0.05 * \
+    embedding_matrix[choices, dim:] += 0.05 * \
         delta_embedding_matrix[:-2, :]
-    embedding_matrix[b_index][dim // 2:] += 0.05 * delta_embedding_matrix[-2]
-    embedding_matrix[a_index][:dim // 2] += 0.05 * delta_embedding_matrix[-1]
+    embedding_matrix[b_index][dim:] += 0.05 * delta_embedding_matrix[-2]
+    embedding_matrix[a_index][:dim] += 0.05 * delta_embedding_matrix[-1]
 
 
 # choices = np.arange(0, len(word_index), 1)
 # for i in range(200):
 #     apply_derivative(0, 1, choices)
-#     print(i, np.exp(np.dot(embedding_matrix[0][:dim // 2], embedding_matrix[1][dim // 2:])) / np.sum(
-#         np.exp(np.matmul(embedding_matrix[:, dim // 2:], embedding_matrix[0][:dim // 2]))))
+#     print(i, np.exp(np.dot(embedding_matrix[0][:dim], embedding_matrix[1][dim:])) / np.sum(
+#         np.exp(np.matmul(embedding_matrix[:, dim:], embedding_matrix[0][:dim]))))
 
 
-for i in range(10):
+for i in range(1):
     np.random.shuffle(lines)
     for line in lines:
-        choices = np.random.choice(len(embedding_matrix), 10, False, pmf)
+        choices = np.random.choice(len(embedding_matrix), 5, False, pmf)
         for j in range(0, 4):
             apply_derivative(word_index[line[j]],
                              word_index[line[j + 1]], choices)
@@ -80,13 +80,14 @@ inv_map = {v: k for k, v in word_index.items()}
 for i in range(300):
     a = np.random.randint(0, len(word_index))
     print(inv_map[a], end=' - ')
-    b = np.exp(np.matmul(embedding_matrix[:, dim // 2:], embedding_matrix[a][:dim // 2]))
+    b = np.exp(np.matmul(embedding_matrix[:, dim:], embedding_matrix[a][:dim]))
     b = b / np.sum(b)
     b[a] = -1
     temp = sorted(np.arange(0, len(word_index), 1),
                   key=lambda x: b[x], reverse=True)[:10]
     for w in temp:
-        print(inv_map[w], '(', b[w], ')', end=',   ')
+        # print(inv_map[w], '(', b[w], ')', end=',   ')
+        print(inv_map[w], end=', ')
     print(end='\n\n')
 print()
 
