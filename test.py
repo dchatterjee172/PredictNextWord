@@ -9,7 +9,7 @@ word_index = {}
 word_occ = {}
 count = 0
 
-with open('~w5_.txt') as data_file:
+with open('~w5_.txt') as data_file:  # https://www.ngrams.info/download_coca.asp
     for line in data_file:
         if np.random.random() > 0.2:
             continue
@@ -90,11 +90,11 @@ for i in range(300):
     print(end='\n\n')
 print()
 
-# reduced_embedding_matrix = tsne(embedding_matrix/100, 2, 50, 20)
-# fig, ax = plt.subplots()
-# for txt in word_index.keys():
-#     ax.annotate(
-#         txt, (reduced_embedding_matrix[word_index[txt]][0], reduced_embedding_matrix[word_index[txt]][1]))
-# ax.set_ylim(-100, 100)
-# ax.set_xlim(-100, 100)
-# plt.show()
+reduced_embedding_matrix = tsne(embedding_matrix/100, 2, 50, 20)
+fig, ax = plt.subplots()
+for txt in word_index.keys():
+    ax.annotate(
+        txt, (reduced_embedding_matrix[word_index[txt]][0], reduced_embedding_matrix[word_index[txt]][1]))
+ax.set_ylim(-100, 100)
+ax.set_xlim(-100, 100)
+plt.show()
